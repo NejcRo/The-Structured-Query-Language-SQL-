@@ -1,0 +1,19 @@
+1.List the total (unitprice * quantity) as “Total Value” by orderid for the top 5 orders.  (That is, the five orders with the highest Total Value.)
+
+SELECT orderid, sum(unitprice * quantity) as “Total Value” FROM orderdetails group by ordered order by 2 desc limit 5
+
+2.How many products does Northwinds have in inventory?  
+
+SELECT count(productid) FROM products where unitsinstock > 0
+
+3.How many products are out of stock?
+
+SELECT count(productid) FROM products where unitsinorder = 0
+
+4.From which supplier(s) does Northwinds carry the fewest products?
+
+SELECT supplierid,count(productid) FROM products group by supplierid ORDER BY 2 asc
+
+5.Which Northwinds employees (just show their employeeid) had over 100 orders ?
+
+SELECT employeeid,count(orderid) FROM orders group by employeeid having count(orderid) > 100 order by 2 desc

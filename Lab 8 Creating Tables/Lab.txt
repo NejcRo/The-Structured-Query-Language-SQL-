@@ -1,0 +1,23 @@
+1.Create an “items” table with the following schema: 
+items itemIDintegerprimary key, 
+itemcode, varchar(5)null,
+itemnamevarchar(40) not null default “ “,
+quantity integernot null default 0,
+price decimal (9,2)not null default 0
+
+CREATE TABLE items
+(
+itemID integer PRIMARY KEY,
+itemcode varchar(5) null,
+itemname varchar(40) not null default ' ',
+quantity integer not null default 0,
+price decimal (9,2) not null default 0
+)
+
+2.Populate your new table with data from the Products table:
+   Consisting of productid, 
+              concat(supplierid, categoryid,discontinued),
+              productname, unitsinstock, unitprice
+
+INSERT INTO items
+(SELECT productid,concat(supplierid,categoryid,discontinued),productname,unitsinstock,unitprice)

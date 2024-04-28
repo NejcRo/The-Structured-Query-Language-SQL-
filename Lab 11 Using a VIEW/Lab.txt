@@ -1,0 +1,14 @@
+1.Create a View displaying the top 5 customers
+
+CREATE VIEW TopCustomers AS
+SELECT companyname,SUM(quantity * unitprice) as "Total Sales"
+FROM customers,orders,orderdetails
+WHERE customers.customerid = orders.customerid AND orders.orderid = orderdetails.orderid
+GROUP BY companyname ORDER BY 2 DESC
+
+ANOTHER WAY--CREATE VIEW TopCustomers AS
+SELECT companyname,SUM(quantity * unitprice) as "Total Sales"
+FROM customers C JOIN orders O ON C.customerid = O.customerid
+JOIN orderdetails OD ON O.orderid = OD.orderid
+GROUP BY companyname ORDER BY 2 DESC
+

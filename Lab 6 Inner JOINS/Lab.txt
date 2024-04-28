@@ -1,0 +1,18 @@
+1.List each order and its Total Value (unitprice * quantity) for all orders shipping into France in descending Total Value order.  
+
+SELECT O.orderid, sum(unitprice * quantity) as “Total Value” FROM orders O, orderdetails OD where O.orderid = OD.orderdetails and shipcountry = ‘France’ group by O.orderid order by 2 desc
+
+ANOTHER WAY--SELECT O.orderid,SUM(unitprice *quantity) as “Total Value” FROM orders O JOIN orderdetails OD on O.orderid = OD.orderid where shipcountry = ‘France’ group by O.orderid order by 2 desc
+
+2.Create a Suppliers List showing Supplier CompanyName, and names of all the products sold by each supplier located in Japan.   
+
+SELECT companyname,productname FROM suppliers,products WHERE suppliers.supplierid = products.supplierid and country = 'Japan'
+
+ANOTHER WAY--SELECT companyname,productname FROM suppliers JOIN products ON suppliers.supplierid = products.supplierid WHERE country = 'Japan'
+
+3.Create a “Low Performers” list showing the employees who have less than $100,000 in total sales.  List the employee’s LastName, FirstName followed by their total sales volume (the total dollar value of their orders.)    
+
+SELECT lastname,firstname,SUM(quantity * unitprice) FROM employees,orders,orderdetails WHERE employees.employeeid = orders.employeeid  AND orders.orderid = orderdetails.orderid group by lastname,firstname  HAVING  SUM(quantity * unitprice) < 100000 order by 3 asc 
+
+ANOTHER WAY--SELECT lastname,firstname,sum(quantity * unitprice) FROM employees JOIN orders ON employees.employeeid = orders.employeeid JOIN orderdetails ON orders.orderid = orderdetails.orderid group by lastname,firstname HAVING sum(quantity * unitprice) < 100000 order by 3 asc
+

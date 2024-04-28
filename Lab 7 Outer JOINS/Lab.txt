@@ -1,0 +1,15 @@
+1.Are there any Northwinds employees that have no orders?  
+
+SELECT E.employeeid FROM employees LEFT JOIN orders O ON E.employeeid = O.employeeid WHERE O.employeeid is null
+
+2.Are there any Northwinds customers that have no orders?  
+
+SELECT C.customerid FROM customers C LEFT JOIN orders O ON C.customerid = O.customerid WHERE O.customerid is null 
+
+3.Are there any Northwinds orders that have bad (not on file) customer numbers? 
+
+SELECT count(O.customerid) FROM orders O LEFT JOIN customers C ON O.cutomerid = C.customerid WHERE C.customerid is null
+
+4.Are there any Shippers that have shipped no Northwinds orders? 
+
+SELECT S.shipperid FROM shippers S LEFT JOIN orders O ON S.shipperid = O.shipvia where O.shipvia is null

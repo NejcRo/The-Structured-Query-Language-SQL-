@@ -1,0 +1,15 @@
+1.List the productid, productname, unitprice of the lowest priced product Northwinds sells. 
+
+SELECT productid,productname,unitprice FROM products where unitprice = (SELECT min(unitprice) FROM products)
+
+2.How many orders in the orders table have a bad customerID (either missing or not on file in the customers table.) 
+
+SELECT count(orderid) FROM orders where customerid not in (SELECT customerid FROM customers)
+
+3.List the most expensive unitprice from each supplier
+
+SELECT supplierid,(SELECT max(unitprice) FROM products where suppliers.supplierid = products.supplierid) FROM suppliers 
+
+4.List the countries that have had 50 or more orders shipped to them
+
+SELECT supplierid FROM (SELECT shipcountry,count(ordered) group by shipcountry having count(ordered) > 50) as “Countries”

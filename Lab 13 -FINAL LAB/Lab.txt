@@ -1,0 +1,132 @@
+1.List  the names of the cities in alphabetical order where Classic Models has offices. 
+SELECT DISTINCT city FROM offices ORDER BY 1
+
+List the EmployeeNumber, LastName, FirstName, Extension for all employees working out of the Paris office.  
+SELECT EmployeeNumber,LastName,FirstName,extension
+FROM employees E JOIN offices OF
+ON E.officecode = OF.officecode
+WHERE city = ‘Paris’
+
+2.List the ProductCode, ProductName, ProductVendor, QuantityInStock and ProductLine for all products with a QuantityInStock between 200 and 1200.  
+
+SELECT ProductCode,ProductName,ProductVendor,QuantityInStock,ProductLine
+FROM products
+WHERE quantityinstock between 200 and 1200
+
+3.(Use a SUBQUERY) List the ProductCode, ProductName, ProductVendor, BuyPrice and MSRP for the least expensive (lowest MSRP) product sold by ClassicModels.  (“MSRP” is the Manufacturer’s Suggested Retail Price.)       
+
+SELECT ProductCode,Productname,ProductVendor,BuyPrice,msrp
+FROM products WHERE msrp =(SELECT min(msrp) FROM products)
+
+4.What is the ProductName and Profit of the product that has the highest profit (profit = MSRP minus BuyPrice).   
+
+SELECT ProductName,(msrp – BuyPrice) as “Profit”
+FROM products WHERE (msrp – BuyPrice) = (SELECT max(msrp – BuyPrice) FROM products)
+
+5.List the country and the number of customers from that country for all countries having just two customers.  List the countries sorted in ascending alphabetical order. Title the column heading for the count of customers as “Customers”.   
+
+SELECT country, count(customernumber) as “Customers”
+FROM customers 
+GROUP BY country HAVING count(customernumber) = 2
+ORDER BY country asc
+
+6.List the ProductCode, ProductName, and number of orders for the products with exactly 25 orders.  Title the column heading for the count of orders as “OrderCount”.   
+
+SELECT P.ProductCode,ProductName,count(ordernumber) as “OrderCount”
+FROM products P JOIN orderdetails OD
+ON P.productcode = OD.productcode
+Group by P.ProductCode,ProductName
+HAVING count(P.ProductCode) = 25
+
+7.List the EmployeeNumber, Firstname + Lastname  (concatenated into one column in the answer set, separated by a blank and referred to as ‘name’) for all the employees reporting to Diane Murphy or Gerard Bondur.   
+
+SELECT EmployeeNumber,concat(Firstname,’ ‘,Lastname) as “name”
+FROM employees
+WHERE reportsto in (‘1002’,’1102’)
+
+8.List the EmployeeNumber, LastName, FirstName of the president of the company (the one employee with no boss.)    
+
+SELECT EmployeeNumber,LastName,FirstName
+FROM employees
+WHERE reportsto is null
+
+9.List the ProductName for all products in the “Classic Cars” product line from the 1950’s.  
+
+SELECT ProductName
+FROM products
+WHERE productline = ‘Classic Cars’ and ProductName like ‘195%’
+
+10.List the month name and the total number of orders for the month in 2004 in which ClassicModels customers placed the most orders.    
+
+SELECT to_char(orderdate,’month’),count(ordernumber)
+FROM orders
+WHERE orderdate between (‘2004-01-01’) and (‘2004-31-12’)
+GROUP BY to_char(orderdate,’month’)
+ORDER BY 2 DESC LIMIT 1
+
+11.List the firstname, lastname of employees who are Sales Reps who have no assigned customers.   
+
+select lastname, firstname 
+        from employees e left outer join customers c on e.employeenumber = c.salesrepemployeenumber 
+where customername is null  
+        and jobtitle = "Sales Rep"
+
+12.List the customername of customers from Switzerland with no orders.  
+
+SELECT customername
+FROM customers C LEFT JOIN orders O
+ON C.customernumber = O.customernumber 
+WHERE O.customernumber is null and country = ‘Switzerland’
+ 
+
+13.List the customername and total quantity of products ordered for customers who have ordered more than 1650 products across all their orders.   
+
+SELECT customername,SUM(quantityordered)
+FROM customers C JOIN orders O
+ON C.customernumber = O.customernumber
+JOIN orderdetails OD
+ON O.ordernumber = OD.ordernumber
+GROUP BY customername
+HAVING SUM(quantityordered) > 1650
+
+14.Create a NEW table named “TopCustomers” with three columns: CustomerNumber (integer), ContactDate (DATE) and  OrderTotal (a real number.)  None of these columns can be NULL.  
+
+CREATE TABLE TopCustomers
+(
+CustomerNumber INT not null default 0,
+ContactDate DATE not null,
+OrderTotal decimal(9,2) not null default 0,
+Constraint PK_TopCustomers PRIMARY KEY(CustomerNumber)
+)
+
+15.Populate the new table “TopCustomers” with the CustomerNumber, today’s date, and the total value of all their orders (PriceEach * quantityOrdered) for those customers whose order total value is greater than $140,000.  
+
+INSERT INTO TopCustomers
+(SELECT O.customernumber,current_date,SUM(priceeach * quantityordered)
+FROM orders O JOIN orderdetails OD
+ON O.ordernumber = OD.ordernumber
+GROUP BY O.customernumber,current_date
+HAVING SUM(priceeach * quantityordered) > 140000)
+
+16.List the contents of the TopCustomers table in descending OrderTotal sequence.  
+
+SELECT * FROM TopCustomers
+ORDER BY 3 DESC
+
+17.Add a new column to the TopCustomers table called OrderCount (integer).
+
+ALTER TABLE TopCustomers
+ADD COLUMN OrderCount INT not null default 0
+
+18.Update the Top Customers table, setting the OrderCount to a random number between 1 and 10.   
+
+UPDATE TopCustomers
+SET ordercount = RANDOM() * 10
+
+19.List the contents of the TopCustomers table in descending OrderCount sequence.  
+
+Select * FROM TopCustomers
+ORDER BY 4 DESC
+
+20.Drop the TopCustomers table.   
+DROP TABLE TopCustomers
